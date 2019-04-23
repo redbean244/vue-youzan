@@ -13,11 +13,7 @@ let app = new Vue({
         topLists: null,
         topIndex: 0,
         subData: null,
-        rankData: {
-            hotGoods:null,
-            hotKeywords:null,
-            hotShops:null
-        }
+        rankData: null
     },
     components:{
         Foot
@@ -35,6 +31,7 @@ let app = new Vue({
             }else{
                 axios.get(url.subLists,{id}).then(res => {
                     this.subData = res.data.data;
+                    console.log(this.subData);
                 })
             }
         },
@@ -46,7 +43,6 @@ let app = new Vue({
     },
     created(){
         this.getTopLists()
-        this.getRank()
         this.getSubList(0,0)
     },
 })
