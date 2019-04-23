@@ -1,6 +1,9 @@
 let url = {
     hotLists: '/index/hotLists',
-    banner: '/index/banner'
+    banner: '/index/banner',
+    topLists: '/category/topList',
+    subLists: '/category/subList',
+    rank: '/category/rank'
 }
 
 
