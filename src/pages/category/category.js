@@ -39,6 +39,9 @@ let app = new Vue({
             axios.get(url.rank).then(res => {
                 this.rankData = res.data.data;
             })
+        },
+        toSearch(list){
+            location.href = `search.html?keyword=${list.name}&id=${list.id}`
         }
     },
     created(){
