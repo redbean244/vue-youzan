@@ -51,7 +51,11 @@
     <div class="search-content" style="display: none;"></div>
     <div class="content">
       <div class="search-wrap js-waterfull-wrap">
-        <ul class="js-list">
+        <ul class="js-list"
+            v-infinite-scroll="getSearchList"
+            infinite-scroll-disabled="loading"
+            infinite-scroll-distance="10"
+        >
           <li class="goods-item" v-for="list in searchList" :data-id="list.id">
             <a href="https://h5.youzan.com/v2/showcase/goods?alias=2755moo9i2r1c&amp;source=yzapp&amp;f_platform=yzapp">
               <div class="thumb">

@@ -34,7 +34,7 @@ let app = new Vue({
             this.loading = true;
             axios.get(url.hotLists,{
                 pageNum: this.pageNum,
-                pageSize: 6
+                pageSize: this.pageSize
             }).then(res =>{
                 let curLists = res.data.lists;
                 //判断所有数据是否加载完毕
