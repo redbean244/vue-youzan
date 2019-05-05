@@ -9,6 +9,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import url from 'js/api.js'
 import qs from 'qs'
+import swipe from 'components/Swipe'
 
 let {id} = qs.parse(location.search.substr(1))
 
@@ -21,16 +22,27 @@ new Vue({
             details: null,
             dealList: null,
             detailTab,
-            tabIndex: 0
+            tabIndex: 0,
+            bannerLists: null
         }
     },
     created(){
         this.getDeatials()
     },
+    components:{
+        swipe
+    },
     methods:{
         getDeatials(){
             axios.get(url.details,{id}).then(res=> {
                 this.details = res.data.data;
+                this.bannerLists = [];
+                this.details.imgs.forEach(item=>{
+                    this.bannerLists.push({
+                        clickUrl: '',
+                        img: item
+                    })
+                })
             })
         },
         changeTab(index){
