@@ -9,8 +9,40 @@ import Vue from 'vue'
 import axios from 'axios'
 import url from 'js/api.js'
 import qs from 'qs'
-import Velocity from 'velocity-animate'
+
+let {id} = qs.parse(location.search.substr(1))
+
+let detailTab = ['商品详情','本店成交']
 
 new Vue({
-    el: '#app'
+    el: '#app',
+    data(){
+        return{
+            details: null,
+            dealList: null,
+            detailTab,
+            tabIndex: 0
+        }
+    },
+    created(){
+        this.getDeatials()
+    },
+    methods:{
+        getDeatials(){
+            axios.get(url.details,{id}).then(res=> {
+                this.details = res.data.data;
+            })
+        },
+        changeTab(index){
+            this.tabIndex = index;
+            if(index){
+                this.getDeal();
+            }
+        },
+        getDeal(){
+            axios.get(url.deal,{id}).then(res=> {
+                this.dealList = res.data.data.lists;
+            })
+        },
+    }
 })
