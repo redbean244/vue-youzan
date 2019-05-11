@@ -18,6 +18,26 @@ let app = new Vue({
     created(){
         this.getList();
     },
+    computed:{
+        allSelect:{
+            get(){
+                if(this.lists&&this.lists.length){
+                    return this.lists.every(shop=>{
+                        return shop.checked;
+                    })
+                }
+                return false;
+            },
+            set(newVal){
+                this.lists.forEach(shop=>{
+                    shop.checked = newVal;
+                    shop.goodsList.forEach(good=>{
+                        good.checked = newVal;
+                    })
+                })
+            }
+        }
+    },
     methods:{
         getList(){
             axios.get(url.cartLists).then(res=>{
@@ -31,8 +51,20 @@ let app = new Vue({
                 this.lists = lists;
             })
         },
-        selectGood(good){
+        selectGood(shop,good){
             good.checked = !good.checked;
+            shop.checked = shop.goodsList.every(good => {
+                return good.checked;
+            })
+        },
+        selectShop(shop){
+            shop.checked = !shop.checked;
+            shop.goodsList.forEach(good=>{
+                good.checked = shop.checked;
+            })
+        },
+        selectAll(){
+            this.allSelect = !this.allSelect;
         }
     }
 })
