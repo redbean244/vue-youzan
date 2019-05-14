@@ -7,14 +7,13 @@ import axios from 'axios'
 import url from 'js/api.js'
 
 
-import Foot from 'components/Foot.vue'
-import Swipe from 'components/Swipe.vue'
-
 let app = new Vue({
     el: ".container",
     data:{
         lists:null,
-        total:0
+        total:0,
+        editingShop: null,
+        editingShopIndex: -1
     },
     created(){
         this.getList();
@@ -61,8 +60,12 @@ let app = new Vue({
                 let lists=res.data.cartList;
                 lists.forEach(shop=>{
                     shop.checked = true;
+                    shop.removeChecked = false;
+                    shop.editing = false;
+                    shop.editingMsg = '编辑';
                     shop.goodsList.forEach(good=>{
                         good.checked = true;
+                        good.removeChecked = false;
                     })
                 })
                 this.lists = lists;
@@ -82,6 +85,18 @@ let app = new Vue({
         },
         selectAll(){
             this.allSelect = !this.allSelect;
+        },
+        edit(shop,shopIndex){
+            shop.editing =!shop.editing;
+            shop.editingMsg = shop.editing ? '完成' : '编辑';
+            this.lists.forEach((item,i)=>{
+                if(shopIndex !== i){
+                    item.editing = false;
+                    item.editingMsg = shop.editing ? '' : '编辑'
+                }
+            })
+            this.editingShop = shop.editing ? 'shop.editing' : null;
+            this.editingShopIndex = shop.editing ? 'shopIndex' : -1;
         }
     }
 })
