@@ -37,6 +37,22 @@ let app = new Vue({
                 })
             }
         },
+        allRemoveSelect:{
+            get(){
+                if(this.editingShop){
+                    return this.editingShop.removeChecked;
+                }
+                return false;
+            },
+            set(newVal){
+                if(this.editingShop){
+                    this.editingShop.removeChecked = newVal;
+                    this.editingShop.goodsList.forEach(good=>{
+                        good.removeChecked = newVal;
+                    })
+                }
+            }
+        },
         selectLists(){
             let arr = [];
             let total = 0;
@@ -52,6 +68,18 @@ let app = new Vue({
             }
             this.total = total;
             return arr;
+        },
+        removeLists(){
+            let arr=[];
+            if(this.editingShop){
+                this.editingShop.goodsList.forEach(good=>{
+                    if(good.removeChecked){
+                        arr.push(good)
+                    }
+                })
+                return arr;
+            }
+            return [];
         }
     },
     methods:{
@@ -72,19 +100,22 @@ let app = new Vue({
             })
         },
         selectGood(shop,good){
-            good.checked = !good.checked;
-            shop.checked = shop.goodsList.every(good => {
-                return good.checked;
+            let attr = this.editingShop ? 'removeChecked' : 'checked';
+            good[attr] = !good[attr];
+            shop[attr] = shop.goodsList.every(good => {
+                return good[attr];
             })
         },
         selectShop(shop){
-            shop.checked = !shop.checked;
+            let attr = this.editingShop ? 'removeChecked' : 'checked';
+            shop[attr] = !shop[attr];
             shop.goodsList.forEach(good=>{
-                good.checked = shop.checked;
+                good[attr] = shop[attr];
             })
         },
         selectAll(){
-            this.allSelect = !this.allSelect;
+            let attr = this.editingShop ? 'allRemoveSelect' : 'allSelect';
+            this[attr] = !this[attr];
         },
         edit(shop,shopIndex){
             shop.editing =!shop.editing;
@@ -95,8 +126,25 @@ let app = new Vue({
                     item.editingMsg = shop.editing ? '' : '编辑'
                 }
             })
-            this.editingShop = shop.editing ? 'shop.editing' : null;
-            this.editingShopIndex = shop.editing ? 'shopIndex' : -1;
+            this.editingShop = shop.editing ? shop : null;
+            this.editingShopIndex = shop.editing ? shopIndex : -1;
+        },
+        add(good){
+            axios.post(url.cartAdd,{
+                id:good.id,
+                number:1
+            }).then(res=>{
+                good.number++;
+            })
+        },
+        reduce(good){
+            if(good.number ===1) return;
+            axios.post(url.cartReduce,{
+                id:good.id,
+                number:1
+            }).then(res=>{
+                good.number--;
+            })
         }
     }
 })

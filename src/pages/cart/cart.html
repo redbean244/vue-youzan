@@ -27,19 +27,21 @@
             <div class="block block-order block-cart" v-for = '(shop,shopIndex) in lists'>
               <div class="header">
                 <div class="select-group js-select-group" @click="selectShop(shop)">
-                  <span class="check" :class={checked:shop.checked}></span>
+                  <span class="check" :class={checked:editingShop?shop.removeChecked:shop.checked}></span>
                 </div>
                 <a class="shop-title"><i class="custom-store-img">店铺：</i>{{shop.shopTitle}}</a>
-                <a href="javascript:;" data-type="cart" class="j-edit-list pull-right c-blue font-size-12 edit-list" @click=edit(shop,shopIndex)>
+                <a href="javascript:;" data-type="cart" class="j-edit-list pull-right c-blue font-size-12 edit-list" 
+                   @click=edit(shop,shopIndex)>
                   {{shop.editingMsg}}
                 </a>
               </div>
               <div>
                 <ul class="js-list block block-list block-list-cart border-0">
-                  <li class="block-item block-item-cart" v-for = "(good,goodIndex) in shop.goodsList" :class="{editing:shop.editing}">
+                  <li class="block-item block-item-cart" v-for = "(good,goodIndex) in shop.goodsList" 
+                      :class="{editing:shop.editing}">
                     <div>
                       <div class="check-container" @click="selectGood(shop,good)">
-                        <span class="check" :class={checked:good.checked}></span>
+                        <span class="check" :class={checked:editingShop?good.removeChecked:good.checked}></span>
                       </div>
                       <div class="name-card clearfix">
                         <a :href="'goods.html?id='+good.id" class="thumb js-goods-link">
@@ -67,8 +69,8 @@
                               <button type="button" class="minus" :class="{disabled:good.number==1}"></button>
                               <input type="text" pattern="[0-9]*" class="txt" v-model="good.number">
                               <button type="button" class="plus "></button>
-                              <div class="response-area response-area-minus"></div>
-                              <div class="response-area response-area-plus"></div>
+                              <div class="response-area response-area-minus" @click=reduce(good)></div>
+                              <div class="response-area response-area-plus" @click=add(good)></div>
                             </div>
                           </div>
                           <div class="price c-orange">
@@ -124,7 +126,7 @@
             </div>
             <div class="bottom-cart clear-fix">
               <div class="select-all" @click="selectAll">
-                <span class="check" :class="{checked:allSelect}"></span> 全选
+                <span class="check" :class="{checked:editingShop?allRemoveSelect:allSelect}"></span> 全选
               </div>
               <!-- 显示状态 -->
               <div class="total-price" v-show="!editingShop">
@@ -135,9 +137,8 @@
                 结算 ({{selectLists.length}})
               </button>
               <!-- 编辑状态 -->
-              <button href="javascript:;" disabled="disabled" 
+              <button href="javascript:;" :disabled="!removeLists.length" 
                       class="j-delete-goods btn font-size-14 btn-red"
-                      style="display: none;"
                       v-show="editingShop">
                       删除
               </button>
