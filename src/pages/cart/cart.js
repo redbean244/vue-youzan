@@ -156,17 +156,60 @@ let app = new Vue({
             })
         },
         remove(shop,shopIndex,good,goodIndex){
-            MessageBox.confirm('确定删除该商品?').then(action => {
-                axios.post(url.cartRemove,{
-                    id:good.id
-                }).then(res=>{
-                    shop.goodsList.splice(goodIndex,1);
-                    if(!shop.goodsList.length){
-                        this.lists.splice(shopIndex,1);
-                        this.removeShop();
-                    }
-                })
-            });
+            this.removeData = {shop,shopIndex,good,goodIndex};
+            this.removeMsg = '确定删除该商品?';
+            this.removeConfirm();
+
+        },
+        removeList(){
+            this.removeMsg = `确定删除${this.removeLists.length}件商品`;
+            this.removeConfirm();
+        },
+        removeConfirm(){
+            if(this.removeMsg === "确定删除该商品?"){
+                MessageBox.confirm(this.removeMsg).then(action => {
+                    let {shop,shopIndex,good,goodIndex} = this.removeData;
+                    axios.post(url.cartRemove,{
+                        id:good.id
+                    }).then(res=>{
+                        shop.goodsList.splice(goodIndex,1);
+                        if(!shop.goodsList.length){
+                            this.lists.splice(shopIndex,1);
+                            this.removeShop();
+                        }
+                    })
+                }).catch(err=>{
+
+                });
+            }else{
+                MessageBox.confirm(this.removeMsg).then(action => {
+                    let ids =[];
+                    this.removeLists.forEach(good=>{
+                        ids.push(good.id);
+                    })
+                    axios.post(url.cartMremove,{
+                        ids:ids
+                    }).then(res=>{
+                        let arr = [];
+                        this.editingShop.goodsList.forEach(good=>{
+                            let index = this.removeLists.findIndex(item=>{
+                                return item.id == good.id;
+                            })
+                            if(index === -1){
+                                arr.push(good);
+                            }
+                        })
+                        if(arr.length){
+                            this.editingShop.goodsList = arr;
+                        }else{
+                            this.lists.splice(this.editingShopIndex,1);
+                            this.removeShop();
+                        }
+                    })
+                }).catch(err=>{
+                    
+                });
+            }
         }
     }
 })
