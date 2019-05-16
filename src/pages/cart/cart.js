@@ -6,6 +6,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import url from 'js/api.js'
 
+import { MessageBox } from 'mint-ui';
 
 let app = new Vue({
     el: ".container",
@@ -87,12 +88,12 @@ let app = new Vue({
             axios.get(url.cartLists).then(res=>{
                 let lists=res.data.cartList;
                 lists.forEach(shop=>{
-                    shop.checked = true;
+                    shop.checked = false;
                     shop.removeChecked = false;
                     shop.editing = false;
                     shop.editingMsg = '编辑';
                     shop.goodsList.forEach(good=>{
-                        good.checked = true;
+                        good.checked = false;
                         good.removeChecked = false;
                     })
                 })
@@ -145,6 +146,27 @@ let app = new Vue({
             }).then(res=>{
                 good.number--;
             })
+        },
+        removeShop(){
+            this.editingShop = null;
+            this.editingShopIndex = -1;
+            this.lists.forEach((shop)=>{
+                shop.editing = false;
+                shop.editingMsg = '编辑'
+            })
+        },
+        remove(shop,shopIndex,good,goodIndex){
+            MessageBox.confirm('确定删除该商品?').then(action => {
+                axios.post(url.cartRemove,{
+                    id:good.id
+                }).then(res=>{
+                    shop.goodsList.splice(goodIndex,1);
+                    if(!shop.goodsList.length){
+                        this.lists.splice(shopIndex,1);
+                        this.removeShop();
+                    }
+                })
+            });
         }
     }
 })
