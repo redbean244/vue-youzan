@@ -5,6 +5,7 @@ import "./cart.css"
 import Vue from 'vue'
 import axios from 'axios'
 import url from 'js/api.js'
+import Volecity from 'velocity-animate'
 
 import { MessageBox } from 'mint-ui';
 
@@ -210,6 +211,22 @@ let app = new Vue({
                     
                 });
             }
+        },
+        start(e,good){
+            good.startX = e.changedTouches[0].clientX;
+        },
+        end(e,shopIndex,good,goodIndex){
+            let endX = e.changedTouches[0].clientX;
+            let left = '0';
+            if(good.startX - endX > 100){
+                left = '-60px';
+            }
+            if(endX - good.startX > 100){
+                left = '0px';
+            }
+            Volecity(this.$refs[`good-${shopIndex}-${goodIndex}`],{
+                left
+            })
         }
     }
 })
