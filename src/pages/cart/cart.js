@@ -6,6 +6,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import url from 'js/api.js'
 import Volecity from 'velocity-animate'
+import Cart from 'js/cartService.js'
 
 import { MessageBox } from 'mint-ui';
 
@@ -132,19 +133,13 @@ let app = new Vue({
             this.editingShopIndex = shop.editing ? shopIndex : -1;
         },
         add(good){
-            axios.post(url.cartAdd,{
-                id:good.id,
-                number:1
-            }).then(res=>{
+            Cart.add(good).then(res=>{
                 good.number++;
             })
         },
         reduce(good){
             if(good.number ===1) return;
-            axios.post(url.cartReduce,{
-                id:good.id,
-                number:1
-            }).then(res=>{
+            Cart.reduce(good).then(res=>{
                 good.number--;
             })
         },
@@ -170,9 +165,7 @@ let app = new Vue({
             if(this.removeMsg === "确定删除该商品?"){
                 MessageBox.confirm(this.removeMsg).then(action => {
                     let {shop,shopIndex,good,goodIndex} = this.removeData;
-                    axios.post(url.cartRemove,{
-                        id:good.id
-                    }).then(res=>{
+                    Cart.cartRemove(good).then(res=>{
                         shop.goodsList.splice(goodIndex,1);
                         if(!shop.goodsList.length){
                             this.lists.splice(shopIndex,1);
@@ -188,9 +181,7 @@ let app = new Vue({
                     this.removeLists.forEach(good=>{
                         ids.push(good.id);
                     })
-                    axios.post(url.cartMremove,{
-                        ids:ids
-                    }).then(res=>{
+                    Cart.cartMremove(ids).then(res=>{
                         let arr = [];
                         this.editingShop.goodsList.forEach(good=>{
                             let index = this.removeLists.findIndex(item=>{
