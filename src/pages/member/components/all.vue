@@ -5,7 +5,7 @@
          v-for = "list in lists"
          :key = list.id
          :class= "{'address-item-default':list.isDefault}"
-         @click=toEdit()>
+         @click=toEdit(list)>
         <div class="address-title">{{list.name}} {{list.tel}}</div>
         <p>{{list.provinceName}}{{list.cityName}}{{list.districtName}}{{list.address}}</p>
         <p class= "address-edit">修改</p>
@@ -15,7 +15,7 @@
         没有地址请添加
     </div>
     <div class="block stick-bottom-row center">
-        <router-link class="btn btn-blue js-no-webview-block js-add-address-btn" to="/address/form">
+        <router-link class="btn btn-blue js-no-webview-block js-add-address-btn" :to="{name:'form',query:{type:'add'}}">
             新增地址
         </router-link>
     </div>
@@ -39,8 +39,11 @@
            })
        },
        methods:{
-           toEdit(){
-               this.$router.push({path:'/address/form'})
+           toEdit(list){
+               this.$router.push({name:'form',query:{
+                   type: 'edit',
+                   instance :list
+               }})
            }
        }
     }
