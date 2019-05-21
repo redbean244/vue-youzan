@@ -23,29 +23,23 @@
 </template>
 
 <script>
-    import Address from 'js/addressService.js'
-    import url from 'js/api.js'
-    import axios from 'axios'
     export default {
-       name: '',
-       data(){
-           return {
-               lists: null
-           }
-       },
-       created(){
-           Address.lists().then(res=>{
-               this.lists = res.data.lists;
-           })
-       },
-       methods:{
+        computed:{
+            lists(){
+                return this.$store.state.lists;
+            }
+        },
+        created(){
+            this.$store.dispatch('getLists')
+        },
+        methods:{
            toEdit(list){
                this.$router.push({name:'form',query:{
                    type: 'edit',
                    instance :list
                }})
            }
-       }
+        }
     }
 </script>
 <style  scoped>
