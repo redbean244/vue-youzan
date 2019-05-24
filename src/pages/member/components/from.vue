@@ -41,7 +41,7 @@
       <div class="block-item c-red center">删除</div>
     </div>
     <div class="block stick-bottom-row center js-save-default" v-show="type=='edit'" @click=setDefault()>
-      <button class="btn btn-standard js-save-default-btn">设为默认收货地址</button>
+      <button class="btn btn-standard js-save-default-btn btn-red">设为默认收货地址</button>
     </div>
   </div>
 </template>
